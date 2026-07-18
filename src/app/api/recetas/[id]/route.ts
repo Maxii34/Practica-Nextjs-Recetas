@@ -83,7 +83,6 @@ export async function DELETE(
         { status: 404 },
       );
     }
-
     const recetaEliminada = await prisma.receta.delete({
       where: { id: Number(id) },
     });

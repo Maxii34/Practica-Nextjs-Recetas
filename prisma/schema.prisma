@@ -12,6 +12,26 @@ datasource db {
   provider = "postgresql"
 }
 
+// USUARIO
+model Usuario {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  nombre    String
+  password  String 
+  createdAt DateTime @default(now())
+
+  recetas     Receta[]
+}
+
+// CATEGORIA (1:N con Receta)
+model Categoria {
+  id     Int    @id @default(autoincrement())
+  nombre String @unique
+
+  recetas Receta[]
+}
+
+// RECETA
 model Receta {
   id           Int      @id @default(autoincrement())
   titulo       String
@@ -22,4 +42,13 @@ model Receta {
   porciones    Int?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  // Autor
+  usuarioId Int?
+  usuario   Usuario? @relation(fields: [usuarioId], references: [id])
+
+  // Categoria
+  categoriaId Int?
+  categoria   Categoria? @relation(fields: [categoriaId], references: [id])
 }
+

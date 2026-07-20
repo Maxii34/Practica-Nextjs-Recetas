@@ -27,10 +27,10 @@ export async function POST(request: Request) {
       return NextResponse.json(errors, { status: 400 });
     }
 
-    const receta = await prisma.receta.create({
+    const categoria = await prisma.receta.create({
       data: result.data,
     });
-    return NextResponse.json(receta, { status: 201 });
+    return NextResponse.json(categoria, { status: 201 });
   } catch (error) {
     console.error(error);
     return NextResponse.json({ mensaje: "Ocurrió un error" }, { status: 500 });

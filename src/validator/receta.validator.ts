@@ -7,6 +7,7 @@ export const recetaSchema = z.object({
   pasos: z.array(z.string()).min(1, "Agregá al menos un paso"),
   tiempoMin: z.number().int().positive().optional(),
   porciones: z.number().int().positive().optional(),
+  categoriaId: z.number().int().positive().optional(),
 });
 
 

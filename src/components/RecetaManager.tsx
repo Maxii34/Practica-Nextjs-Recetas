@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 import RecetaForm, { RecetaFormValues } from "@/components/RecetaForm";
 
 // Este tipo refleja la estructura de una receta recuperada desde el backend.
@@ -172,12 +173,22 @@ export default function RecetaManager() {
 
       setSuccessMessage("Receta creada correctamente.");
       await fetchRecetas();
+      await Swal.fire({
+        title: "Receta creada",
+        text: "La receta fue creada correctamente.",
+        icon: "success",
+      });
     } catch (error) {
-      setOperationError(
+      const message =
         error instanceof Error
           ? error.message
-          : "No se pudo crear la receta.",
-      );
+          : "No se pudo crear la receta.";
+      setOperationError(message);
+      await Swal.fire({
+        title: "Error al crear",
+        text: message,
+        icon: "error",
+      });
     } finally {
       setIsSaving(false);
     }
@@ -209,12 +220,22 @@ export default function RecetaManager() {
       setSuccessMessage("Receta actualizada correctamente.");
       setSelectedReceta(null);
       await fetchRecetas();
+      await Swal.fire({
+        title: "Receta actualizada",
+        text: "Los cambios se guardaron correctamente.",
+        icon: "success",
+      });
     } catch (error) {
-      setOperationError(
+      const message =
         error instanceof Error
           ? error.message
-          : "No se pudo actualizar la receta.",
-      );
+          : "No se pudo actualizar la receta.";
+      setOperationError(message);
+      await Swal.fire({
+        title: "Error al actualizar",
+        text: message,
+        icon: "error",
+      });
     } finally {
       setIsSaving(false);
     }
@@ -235,6 +256,19 @@ export default function RecetaManager() {
     setSuccessMessage("");
 
     try {
+      const { isConfirmed } = await Swal.fire({
+        title: `¿Eliminar ${receta.titulo}?`,
+        text: "Esta acción no se puede deshacer.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar",
+      });
+
+      if (!isConfirmed) {
+        return;
+      }
+
       const response = await fetch(`${apiBase}/${receta.id}`, {
         method: "DELETE",
       });
@@ -244,17 +278,28 @@ export default function RecetaManager() {
         throw new Error(message || "No se pudo eliminar la receta.");
       }
 
+      await Swal.fire({
+        title: "Receta eliminada",
+        text: "La receta fue eliminada correctamente.",
+        icon: "success",
+      });
+
       setSuccessMessage("Receta eliminada correctamente.");
       if (selectedReceta?.id === receta.id) {
         setSelectedReceta(null);
       }
       await fetchRecetas();
     } catch (error) {
-      setOperationError(
+      const message =
         error instanceof Error
           ? error.message
-          : "No se pudo eliminar la receta.",
-      );
+          : "No se pudo eliminar la receta.";
+      setOperationError(message);
+      await Swal.fire({
+        title: "Error al eliminar",
+        text: message,
+        icon: "error",
+      });
     } finally {
       setDeletingId(null);
     }

@@ -12,6 +12,12 @@ type Receta = {
   pasos: string[];
   tiempoMin?: number | null;
   porciones?: number | null;
+  categoriaId?: number | null;
+};
+
+type Categoria = {
+  id: number;
+  nombre: string;
 };
 
 type LoadStatus = "idle" | "loading" | "success" | "error";
@@ -21,6 +27,7 @@ const apiBase = "/api/recetas";
 
 export default function RecetaManager() {
   const [recetas, setRecetas] = useState<Receta[]>([]);
+  const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [status, setStatus] = useState<LoadStatus>("idle");
   const [fetchError, setFetchError] = useState<string>("");
   const [operationError, setOperationError] = useState<string>("");
@@ -36,6 +43,7 @@ export default function RecetaManager() {
     pasos: [],
     tiempoMin: undefined,
     porciones: undefined,
+    categoriaId: undefined,
   };
 
   const [formInitialValues, setFormInitialValues] = useState<RecetaFormValues>(
@@ -45,6 +53,7 @@ export default function RecetaManager() {
   // Cargar la lista de recetas cuando el componente se monta.
   useEffect(() => {
     fetchRecetas();
+    fetchCategorias();
   }, []);
 
   // Cuando se selecciona una receta para editar, actualizo el formulario con sus valores.
@@ -62,6 +71,11 @@ export default function RecetaManager() {
         porciones:
           selectedReceta.porciones !== null
             ? selectedReceta.porciones ?? undefined
+            : undefined,
+        categoriaId:
+          selectedReceta.categoriaId !== undefined &&
+          selectedReceta.categoriaId !== null
+            ? selectedReceta.categoriaId
             : undefined,
       });
       return;
@@ -96,6 +110,26 @@ export default function RecetaManager() {
           : "Ocurrió un problema al cargar las recetas.",
       );
       setStatus("error");
+    }
+  };
+
+  // Recupera todas las categorías desde la ruta GET /api/categorias.
+  const fetchCategorias = async () => {
+    try {
+      const response = await fetch("/api/categorias", {
+        method: "GET",
+        cache: "no-store",
+      });
+
+      if (!response.ok) {
+        throw new Error("No se pudieron cargar las categorías.");
+      }
+
+      const data: Categoria[] = await response.json();
+      setCategorias(data);
+    } catch (error) {
+      console.error("Error cargando categorías:",
+        error instanceof Error ? error.message : error);
     }
   };
 
@@ -275,6 +309,7 @@ export default function RecetaManager() {
             initial={formInitialValues}
             submitLabel={isEditing ? "Actualizar receta" : "Crear receta"}
             disabled={isSaving}
+            categories={categorias}
             onSubmit={isEditing ? handleUpdate : handleCreate}
             externalError={operationError}
           />
@@ -344,6 +379,11 @@ export default function RecetaManager() {
                     </h3>
                     <p className="mt-1 text-sm leading-6 text-slate-600">
                       {receta.descripcion || "Sin descripción."}
+                    </p>
+                    <p className="mt-2 text-xs uppercase tracking-[0.2em] text-slate-500">
+                      {receta.categoriaId
+                        ? categorias.find((categoria) => categoria.id === receta.categoriaId)?.nombre || "Categoría desconocida"
+                        : "Sin categoría"}
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-2 sm:shrink-0">

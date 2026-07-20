@@ -10,6 +10,7 @@ export type RecetaFormValues = {
   pasos: string[];
   tiempoMin?: number;
   porciones?: number;
+  categoriaId?: number;
 };
 
 type FormState = {
@@ -19,6 +20,7 @@ type FormState = {
   pasosText: string;
   tiempoMin: string;
   porciones: string;
+  categoriaId: string;
 };
 
 type FieldErrors = Partial<Record<keyof FormState, string>>;
@@ -27,6 +29,7 @@ interface RecetaFormProps {
   initial?: RecetaFormValues;
   submitLabel: string;
   disabled?: boolean;
+  categories: { id: number; nombre: string }[];
   onSubmit: (values: RecetaFormValues) => Promise<void>;
   externalError?: string;
 }
@@ -60,12 +63,17 @@ const getInitialFormState = (initial?: RecetaFormValues): FormState => ({
     initial?.porciones !== undefined && initial?.porciones !== null
       ? String(initial.porciones)
       : "",
+  categoriaId:
+    initial?.categoriaId !== undefined && initial?.categoriaId !== null
+      ? String(initial.categoriaId)
+      : "",
 });
 
 export default function RecetaForm({
   initial,
   submitLabel,
   disabled,
+  categories,
   onSubmit,
   externalError,
 }: RecetaFormProps) {
@@ -115,6 +123,7 @@ export default function RecetaForm({
       pasos,
       tiempoMin: parseNumber(values.tiempoMin),
       porciones: parseNumber(values.porciones),
+      categoriaId: parseNumber(values.categoriaId),
     });
   };
 
@@ -146,6 +155,25 @@ export default function RecetaForm({
           rows={3}
           className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 disabled:cursor-not-allowed disabled:opacity-70"
         />
+      </div>
+
+      <div>
+        <label className="block text-sm font-semibold text-slate-700">
+          Categoría
+        </label>
+        <select
+          value={values.categoriaId}
+          onChange={(event) => handleChange("categoriaId", event.target.value)}
+          disabled={disabled}
+          className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 disabled:cursor-not-allowed disabled:opacity-70"
+        >
+          <option value="">Sin categoría</option>
+          {categories.map((categoria) => (
+            <option key={categoria.id} value={String(categoria.id)}>
+              {categoria.nombre}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div>

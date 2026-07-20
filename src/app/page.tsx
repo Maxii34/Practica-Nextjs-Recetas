@@ -1,61 +1,5 @@
 import Link from "next/link";
-
-const recetas = [
-  {
-    id: "1",
-    name: "Tortilla Española",
-    category: "Desayuno",
-    time: "30 min",
-    description:
-      "Una tortilla suave con patatas doradas, cebolla caramelizada y un toque de perejil.",
-    tags: ["Española", "Huevos", "Fácil"],
-  },
-  {
-    id: "2",
-    name: "Ensalada Mediterránea",
-    category: "Cena",
-    time: "15 min",
-    description:
-      "Fresca mezcla de tomate, pepino, aceitunas y queso feta con aliño cítrico.",
-    tags: ["Saludable", "Vegetariana", "Rápida"],
-  },
-  {
-    id: "3",
-    name: "Pasta al Pesto",
-    category: "Comida",
-    time: "25 min",
-    description:
-      "Pasta al dente con salsa genovesa, piñones tostados y parmesano rallado.",
-    tags: ["Italiana", "Aromática", "Casera"],
-  },
-  {
-    id: "4",
-    name: "Crema de Calabaza",
-    category: "Entrada",
-    time: "35 min",
-    description:
-      "Crema suave y reconfortante de calabaza con un toque de jengibre y crema fresca.",
-    tags: ["Otoño", "Vegetariana", "Comfort Food"],
-  },
-  {
-    id: "5",
-    name: "Pollo al Curry",
-    category: "Cena",
-    time: "40 min",
-    description:
-      "Pollo tierno en salsa de curry suave con leche de coco y especias aromáticas.",
-    tags: ["Exótico", "Salsa", "Sabroso"],
-  },
-  {
-    id: "6",
-    name: "Brownie de Chocolate",
-    category: "Postre",
-    time: "45 min",
-    description:
-      "Brownie húmedo y chocolateado con corteza crujiente y corazón fundente.",
-    tags: ["Dulce", "Chocolate", "Para compartir"],
-  },
-];
+import RecetaManager from "@/components/RecetaManager";
 
 export default function Home() {
   return (
@@ -133,40 +77,8 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-            {recetas.map((receta) => (
-              <article
-                key={receta.id}
-                className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
-              >
-                <div className="mb-6 flex items-center justify-between gap-4 rounded-[1.5rem] bg-slate-100 p-5">
-                  <div>
-                    <p className="text-sm font-semibold uppercase tracking-[0.24em] text-emerald-600">
-                      {receta.category}
-                    </p>
-                    <h3 className="mt-3 text-2xl font-semibold text-slate-950">
-                      {receta.name}
-                    </h3>
-                  </div>
-                  <span className="rounded-full bg-slate-900 px-3 py-1 text-xs font-semibold text-white">
-                    {receta.time}
-                  </span>
-                </div>
-                <p className="text-sm leading-6 text-slate-600">
-                  {receta.description}
-                </p>
-                <div className="mt-6 flex flex-wrap gap-2">
-                  {receta.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </article>
-            ))}
+          <div className="mt-10">
+            <RecetaManager />
           </div>
         </section>
 
